@@ -25,7 +25,7 @@ function Login() {
     try {
       setLoading(true); // 로딩 시작
       const response = await axios.post(LOGIN_API_KEY, { id, pw: password });
-      const { code, token, userId } = response.data;
+      const { code, result } = response.data;
       console.log(response.data); // 확인용 로그
 
       if (code === 400) {
@@ -35,9 +35,10 @@ function Login() {
       } else if (code === 402) {
         setTimeout(() => setMsg("비밀번호가 일치하지 않습니다."), 1500);
       } else {
-        localStorage.setItem("token", token);
-        localStorage.setItem("userId", userId);
-        dispatch(loginUser({ id: userId, token }));
+        const { userId, AccessToken } = result
+          localStorage.setItem('token', AccessToken)
+          localStorage.setItem('id', userId)
+          dispatch(loginUser({ id: userId, token: AccessToken }))
         setTimeout(() => setMsg("Login successful!"), 1500);
       }
     } catch (error) {
